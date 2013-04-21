@@ -121,6 +121,9 @@ extern struct SynapticsProtocolOperations event_proto_operations;
 #ifdef BUILD_PSMCOMM
 extern struct SynapticsProtocolOperations psm_proto_operations;
 #endif                          /* BUILD_PSMCOMM */
+#ifdef BUILD_WSCONSCOMM
+extern struct SynapticsProtocolOperations wscons_proto_operations;
+#endif                          /* BUILD_WSCONSCOMM */
 
 extern struct SynapticsHwState *SynapticsHwStateAlloc(SynapticsPrivate * priv);
 extern void SynapticsHwStateFree(struct SynapticsHwState **hw);

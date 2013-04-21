@@ -158,6 +158,9 @@ const static struct {
     { "psaux", &psaux_proto_operations },
     { "alps", &alps_proto_operations },
 #endif
+#ifdef BUILD_WSCONSCOMM
+    { "wscons", &wscons_proto_operations },
+#endif
     { NULL, NULL }
 };
 

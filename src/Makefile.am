@@ -56,3 +56,8 @@ if BUILD_PSMCOMM
 synaptics_drv_la_SOURCES += \
 	psmcomm.c
 endif
+
+if BUILD_WSCONSCOMM
+synaptics_drv_la_SOURCES += \
+	wsconscomm.c
+endif

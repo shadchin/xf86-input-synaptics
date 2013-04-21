@@ -110,6 +110,10 @@ case "${host}" in
 	AC_MSG_RESULT([ps2comm alpscomm])
 	BUILD_PS2COMM="yes"
 	;;
+*openbsd*)
+	AC_MSG_RESULT([wsconscomm])
+	BUILD_WSCONSCOMM="yes"
+	;;
 *)
 	AC_MSG_ERROR([Cannot find suitable backends for this platform.])
 	;;
@@ -124,9 +128,13 @@ fi
 if test "x$BUILD_PS2COMM" = xyes; then
     AC_DEFINE(BUILD_PS2COMM, 1, [Optional backend ps2comm and alpscomm enabled])
 fi
+if test "x$BUILD_WSCONSCOMM" = xyes; then
+    AC_DEFINE(BUILD_WSCONSCOMM, 1, [Optional backend wsconscomm enabled])
+fi
 AM_CONDITIONAL([BUILD_EVENTCOMM], [test "x${BUILD_EVENTCOMM}" = "xyes"])
 AM_CONDITIONAL([BUILD_PSMCOMM], [test "x${BUILD_PSMCOMM}" = "xyes"])
 AM_CONDITIONAL([BUILD_PS2COMM], [test "x${BUILD_PS2COMM}" = "xyes"])
+AM_CONDITIONAL([BUILD_WSCONSCOMM], [test "x${BUILD_WSCONSCOMM}" = "xyes"])
 
 # -----------------------------------------------------------------------------
 #			Dependencies for synclient and syndaemon
