@@ -24,7 +24,6 @@
 #include <errno.h>
 #include <string.h>
 #include "synproto.h"
-#include "synaptics.h"
 #include "synapticsstr.h"
 #include <xf86.h>
 
