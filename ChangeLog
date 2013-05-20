@@ -1,3 +1,88 @@
+commit 96cf04dce19e7c90bc05b8b3b192b5bfb97381d2
+Author: Peter Hutterer <peter.hutterer@who-t.net>
+Date:   Mon May 13 10:03:48 2013 +1000
+
+    synaptics 1.7.1
+    
+    Signed-off-by: Peter Hutterer <peter.hutterer@who-t.net>
+
+commit 3bd40423b26ab692174ddcdd12489467ba876926
+Author: Peter Hutterer <peter.hutterer@who-t.net>
+Date:   Thu May 9 11:09:51 2013 +1000
+
+    Plug memory leak for priv->touch_axes
+    
+    Allocated in event_query_touch, was never freed.
+    
+    Signed-off-by: Peter Hutterer <peter.hutterer@who-t.net>
+    Reviewed-by: Dave Airlie <airlied@redhat.com>
+
+commit eb50f8023e9ce11c3f0249ef9ddf398a1d983c84
+Author: Peter Hutterer <peter.hutterer@who-t.net>
+Date:   Thu May 9 11:06:12 2013 +1000
+
+    Plug memory leak for option_string
+    
+    xf86SetStrOption() returns a strdup'd string that must be freed after use.
+    
+    Signed-off-by: Peter Hutterer <peter.hutterer@who-t.net>
+    Reviewed-by: Dave Airlie <airlied@redhat.com>
+
+commit 7cc0ebf0858ebb505d933839f25bb269a8cdb764
+Author: Peter Hutterer <peter.hutterer@who-t.net>
+Date:   Fri Apr 26 10:09:10 2013 +1000
+
+    Fix stack smash in clickpad_guess_clickfingers()
+    
+    Apple Magic Trackpad can report 16 slots. In clickpad_guess_clickfingers()
+    the array allocated on the stack contains only 10 slots.
+    As (.num_mt_mask == .num_slots), the function writes out of the bounds
+    of close_point.
+    
+    Use a size 32 bitmask instead and warn if we ever get past 32 touchpoints.
+    
+    This fixes:
+    https://bugzilla.redhat.com/show_bug.cgi?id=952221
+    
+    Signed-off-by: Peter Hutterer <peter.hutterer@who-t.net>
+    Reported-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+
+commit ac47b4ea5b4f7b920b84a1e70adce3475e3be346
+Author: Peter Hutterer <peter.hutterer@who-t.net>
+Date:   Wed Apr 3 10:50:50 2013 +1000
+
+    Allow soft button areas to overlap on the edge
+    
+    For percent-based configuration in the form of
+    middle button 33%-66%, right button 66%-0 we'd get an error because of the
+    one device unit overlap. This was neither documented nor useful, because
+    leaving a 1% gap leaves an actual gap between the buttons. Allow for an
+    overlap of one device unit on the edge of the buttons.
+    
+    What's picked in that case depends on the implementation of
+    is_inside_softbutton_area but since one device unit is so small, it doesn't
+    matter.
+    
+    Signed-off-by: Peter Hutterer <peter.hutterer@who-t.net>
+
+commit 368d96f4dfd4605b80d039ec4508c906c3723cf7
+Author: Peter Hutterer <peter.hutterer@who-t.net>
+Date:   Wed Apr 3 10:50:21 2013 +1000
+
+    man: clarify that 0, not 0% disables the softbutton area
+    
+    Signed-off-by: Peter Hutterer <peter.hutterer@who-t.net>
+
+commit 148afc2dd55bb5d256d8b251542c90bcca7aaf84
+Author: Peter Hutterer <peter.hutterer@who-t.net>
+Date:   Wed Apr 3 10:34:28 2013 +1000
+
+    Improve readability of the soft button areas
+    
+    Replace the hardcoded indices with enums that are somewhat expressive.
+    
+    Signed-off-by: Peter Hutterer <peter.hutterer@who-t.net>
+
 commit 691e8db4d8a5e35eb31f62d1e54523917e2830cd
 Author: Peter Hutterer <peter.hutterer@who-t.net>
 Date:   Tue Apr 2 13:12:09 2013 +1000

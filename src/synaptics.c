@@ -367,54 +367,67 @@ SynapticsIsSoftButtonAreasValid(int *values)
     Bool right_disabled = FALSE;
     Bool middle_disabled = FALSE;
 
+    enum {
+        /* right button left, right, top, bottom */
+        RBL = 0,
+        RBR = 1,
+        RBT = 2,
+        RBB = 3,
+        /* middle button left, right, top, bottom */
+        MBL = 4,
+        MBR = 5,
+        MBT = 6,
+        MBB = 7,
+    };
+
     /* Check right button area */
-    if ((((values[0] != 0) && (values[1] != 0)) && (values[0] > values[1])) ||
-        (((values[2] != 0) && (values[3] != 0)) && (values[2] > values[3])))
+    if ((((values[RBL] != 0) && (values[RBR] != 0)) && (values[RBL] > values[RBR])) ||
+        (((values[RBT] != 0) && (values[RBB] != 0)) && (values[RBT] > values[RBB])))
         return FALSE;
 
     /* Check middle button area */
-    if ((((values[4] != 0) && (values[5] != 0)) && (values[4] > values[5])) ||
-        (((values[6] != 0) && (values[7] != 0)) && (values[6] > values[7])))
+    if ((((values[MBL] != 0) && (values[MBR] != 0)) && (values[MBL] > values[MBR])) ||
+        (((values[MBT] != 0) && (values[MBB] != 0)) && (values[MBT] > values[MBB])))
         return FALSE;
 
-    if (values[0] == 0 && values[1] == 0 && values[2] == 0 && values[3] == 0)
+    if (values[RBL] == 0 && values[RBR] == 0 && values[RBT] == 0 && values[RBB] == 0)
         right_disabled = TRUE;
 
-    if (values[4] == 0 && values[5] == 0 && values[6] == 0 && values[7] == 0)
+    if (values[MBL] == 0 && values[MBR] == 0 && values[MBT] == 0 && values[MBB] == 0)
         middle_disabled = TRUE;
 
     if (!right_disabled &&
-        ((values[0] && values[0] == values[1]) ||
-         (values[2] && values[2] == values[3])))
+        ((values[RBL] && values[RBL] == values[RBR]) ||
+         (values[RBT] && values[RBT] == values[RBB])))
         return FALSE;
 
     if (!middle_disabled &&
-        ((values[4] && values[4] == values[5]) ||
-         (values[6] && values[6] == values[7])))
+        ((values[MBL] && values[MBL] == values[MBR]) ||
+         (values[MBT] && values[MBT] == values[MBB])))
         return FALSE;
 
     /* Check for overlapping button areas */
     if (!right_disabled && !middle_disabled) {
-        int right_left = values[0] ? values[0] : INT_MIN;
-        int right_right = values[1] ? values[1] : INT_MAX;
-        int right_top = values[2] ? values[2] : INT_MIN;
-        int right_bottom = values[3] ? values[3] : INT_MAX;
-        int middle_left = values[4] ? values[4] : INT_MIN;
-        int middle_right = values[5] ? values[5] : INT_MAX;
-        int middle_top = values[6] ? values[6] : INT_MIN;
-        int middle_bottom = values[7] ? values[7] : INT_MAX;
+        int right_left = values[RBL] ? values[RBL] : INT_MIN;
+        int right_right = values[RBR] ? values[RBR] : INT_MAX;
+        int right_top = values[RBT] ? values[RBT] : INT_MIN;
+        int right_bottom = values[RBB] ? values[RBB] : INT_MAX;
+        int middle_left = values[MBL] ? values[MBL] : INT_MIN;
+        int middle_right = values[MBR] ? values[MBR] : INT_MAX;
+        int middle_top = values[MBT] ? values[MBT] : INT_MIN;
+        int middle_bottom = values[MBB] ? values[MBB] : INT_MAX;
 
         /* If areas overlap in the Y axis */
         if ((right_bottom <= middle_bottom && right_bottom >= middle_top) ||
             (right_top <= middle_bottom && right_top >= middle_top)) {
             /* Check for overlapping left edges */
-            if ((right_left < middle_left && right_right >= middle_left) ||
-                (middle_left < right_left && middle_right >= right_left))
+            if ((right_left < middle_left && right_right > middle_left) ||
+                (middle_left < right_left && middle_right > right_left))
                 return FALSE;
 
             /* Check for overlapping right edges */
-            if ((right_right > middle_right && right_left <= middle_right) ||
-                (middle_right > right_right && middle_left <= right_right))
+            if ((right_right > middle_right && right_left < middle_right) ||
+                (middle_right > right_right && middle_left < right_right))
                 return FALSE;
         }
 
@@ -422,13 +435,13 @@ SynapticsIsSoftButtonAreasValid(int *values)
         if ((right_left >= middle_left && right_left <= middle_right) ||
             (right_right >= middle_left && right_right <= middle_right)) {
             /* Check for overlapping top edges */
-            if ((right_top < middle_top && right_bottom >= middle_top) ||
-                (middle_top < right_top && middle_bottom >= right_top))
+            if ((right_top < middle_top && right_bottom > middle_top) ||
+                (middle_top < right_top && middle_bottom > right_top))
                 return FALSE;
 
             /* Check for overlapping bottom edges */
-            if ((right_bottom > middle_bottom && right_top <= middle_bottom) ||
-                (middle_bottom > right_bottom && middle_top <= right_bottom))
+            if ((right_bottom > middle_bottom && right_top < middle_bottom) ||
+                (middle_bottom > right_bottom && middle_top < right_bottom))
                 return FALSE;
         }
     }
@@ -500,12 +513,15 @@ set_softbutton_areas_option(InputInfoPtr pInfo)
     memcpy(pars->softbutton_areas[0], values, 4 * sizeof(int));
     memcpy(pars->softbutton_areas[1], values + 4, 4 * sizeof(int));
 
+    free(option_string);
+
     return;
 
  fail:
     xf86IDrvMsg(pInfo, X_ERROR,
                 "invalid SoftButtonAreas value '%s', keeping defaults\n",
                 option_string);
+    free(option_string);
 }
 
 static void
@@ -1019,6 +1035,8 @@ DeviceClose(DeviceIntPtr dev)
     RetValue = DeviceOff(dev);
     TimerFree(priv->timer);
     priv->timer = NULL;
+    free(priv->touch_axes);
+    priv->touch_axes = NULL;
     SynapticsHwStateFree(&priv->hwState);
     SynapticsHwStateFree(&priv->old_hw_state);
     SynapticsHwStateFree(&priv->local_hw_state);
@@ -1360,23 +1378,30 @@ is_inside_button_area(SynapticsParameters * para, int which, int x, int y)
 {
     Bool inside_area = TRUE;
 
-    if (para->softbutton_areas[which][0] == 0 &&
-        para->softbutton_areas[which][1] == 0 &&
-        para->softbutton_areas[which][2] == 0 &&
-        para->softbutton_areas[which][3] == 0)
+    enum {
+        LEFT = 0,
+        RIGHT = 1,
+        TOP = 2,
+        BOTTOM = 3
+    };
+
+    if (para->softbutton_areas[which][LEFT] == 0 &&
+        para->softbutton_areas[which][RIGHT] == 0 &&
+        para->softbutton_areas[which][TOP] == 0 &&
+        para->softbutton_areas[which][BOTTOM] == 0)
         return FALSE;
 
-    if (para->softbutton_areas[which][0] &&
-        x < para->softbutton_areas[which][0])
+    if (para->softbutton_areas[which][LEFT] &&
+        x < para->softbutton_areas[which][LEFT])
         inside_area = FALSE;
-    else if (para->softbutton_areas[which][1] &&
-             x > para->softbutton_areas[which][1])
+    else if (para->softbutton_areas[which][RIGHT] &&
+             x > para->softbutton_areas[which][RIGHT])
         inside_area = FALSE;
-    else if (para->softbutton_areas[which][2] &&
-             y < para->softbutton_areas[which][2])
+    else if (para->softbutton_areas[which][TOP] &&
+             y < para->softbutton_areas[which][TOP])
         inside_area = FALSE;
-    else if (para->softbutton_areas[which][3] &&
-             y > para->softbutton_areas[which][3])
+    else if (para->softbutton_areas[which][BOTTOM] &&
+             y > para->softbutton_areas[which][BOTTOM])
         inside_area = FALSE;
 
     return inside_area;
@@ -2433,9 +2458,10 @@ clickpad_guess_clickfingers(SynapticsPrivate * priv,
                             struct SynapticsHwState *hw)
 {
     int nfingers = 0;
-    char close_point[SYNAPTICS_MAX_TOUCHES] = { 0 };    /* 1 for each point close
-                                                           to another one */
+    uint32_t close_point = 0; /* 1 bit for each point close to another one */
     int i, j;
+
+    BUG_RETURN_VAL(hw->num_mt_mask > sizeof(close_point) * 8, 0);
 
     for (i = 0; i < hw->num_mt_mask - 1; i++) {
         ValuatorMask *f1;
@@ -2468,14 +2494,16 @@ clickpad_guess_clickfingers(SynapticsPrivate * priv,
              * size. Good luck. */
             if (abs(x1 - x2) < (priv->maxx - priv->minx) * .3 &&
                 abs(y1 - y2) < (priv->maxy - priv->miny) * .3) {
-                close_point[j] = 1;
-                close_point[i] = 1;
+                close_point |= (1 << j);
+                close_point |= (1 << i);
             }
         }
     }
 
-    for (i = 0; i < SYNAPTICS_MAX_TOUCHES; i++)
-        nfingers += close_point[i];
+    while (close_point > 0) {
+        nfingers += close_point & 0x1;
+        close_point >>= 1;
+    }
 
     return nfingers;
 }
