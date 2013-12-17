@@ -1,3 +1,47 @@
+commit 88d926d12a1f5c06ee2825de5bc4b2222ec29c78
+Author: Peter Hutterer <peter.hutterer@who-t.net>
+Date:   Mon Dec 9 11:28:23 2013 +1000
+
+    synaptics 1.7.2
+    
+    Signed-off-by: Peter Hutterer <peter.hutterer@who-t.net>
+
+commit 61243ada3e1e10f6d32a899a6cc595efa244eb25
+Author: Peter Hutterer <peter.hutterer@who-t.net>
+Date:   Wed Dec 4 07:58:26 2013 +1000
+
+    eventcomm: ungrab the device on DeviceOff
+    
+    For symmetry, the kernel should ungrab when we close the fd.
+    
+    Signed-off-by: Peter Hutterer <peter.hutterer@who-t.net>
+    
+    [modified for the 1.7 branch which isn't using libevdev yet]
+    
+    (cherry picked from commit 5d391e352f4e502ada6444a7ce860683e3480fbf)
+
+commit 09ac39309fbee01aa047dab1b0f577dc2571cdd1
+Author: Peter Hutterer <peter.hutterer@who-t.net>
+Date:   Thu Dec 5 09:31:11 2013 +1000
+
+    Add missing property handler for the pressure motion factor
+    
+    Signed-off-by: Peter Hutterer <peter.hutterer@who-t.net>
+    (cherry picked from commit 29318c1d94510cfb6d5d712e912af111f99edb42)
+
+commit f4ddbde165843924195b08551d7d6d6200c44b23
+Author: Peter Hutterer <peter.hutterer@who-t.net>
+Date:   Fri Jul 19 11:08:43 2013 +1000
+
+    Disable driver scaling for input ABI 19.2
+    
+    For absolute devices in relative mode, i.e. touchpads, the server now takes
+    device resolution into account. Doing so means that the driver mustn't
+    scale, so we deactivate those bits in the driver.
+    
+    Signed-off-by: Peter Hutterer <peter.hutterer@who-t.net>
+    (cherry picked from commit 0fb59b3487d57523a03f078a2061e2ea0cacbc7c)
+
 commit 96cf04dce19e7c90bc05b8b3b192b5bfb97381d2
 Author: Peter Hutterer <peter.hutterer@who-t.net>
 Date:   Mon May 13 10:03:48 2013 +1000

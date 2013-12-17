@@ -206,6 +206,7 @@ static Bool
 EventDeviceOffHook(InputInfoPtr pInfo)
 {
     UninitializeTouch(pInfo);
+    SYSCALL(ioctl(pInfo->fd, EVIOCGRAB, (pointer) 0));
 
     return Success;
 }
